@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Conexión - Google Apps Script</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1, h2 {
+            color: #333;
+        }
+        
+        .test-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        
+        .test-button:hover {
+            background-color: #0056b3;
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            background-color: #f8f9fa;
+        }
+        
+        .success {
+            border-color: #28a745;
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .error {
+            border-color: #dc3545;
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test de Conexión a Google Apps Script</h1>
+        <p>Esta página te ayudará a verificar si tu script de Google Apps Script está correctamente configurado y accesible.</p>
+        
+        <div>
+            <label for="script-url">URL del Script:</label>
+            <input type="text" id="script-url" style="width: 100%; padding: 8px; margin: 10px 0;" 
+                   value="https://script.google.com/macros/s/AKfycbzs5Iw2_blcsvkEtBBGaIK2oPQ4ObDR3Rqy7ubSR-uADW3YDXluJWnb_VVN09xQxgaqLw/exec">
+        </div>
+        
+        <button class="test-button" onclick="testConnection()">Probar Conexión</button>
+        <button class="test-button" onclick="testDashboardData()">Probar Datos del Dashboard</button>
+        
+        <div id="result" class="result" style="display: none;"></div>
+        
+        <h2>Respuesta del Servidor:</h2>
+        <pre id="response" style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; overflow: auto; max-height: 300px;"></pre>
+    </div>
+    
+    <script>
+        function testConnection() {
+            const scriptUrl = document.getElementById('script-url').value.trim();
+            const resultDiv = document.getElementById('result');
+            const responseDiv = document.getElementById('response');
+            
+            if (!scriptUrl) {
+                resultDiv.innerHTML = "Por favor, ingresa la URL del script.";
+                resultDiv.className = "result error";
+                resultDiv.style.display = "block";
+                return;
+            }
+            
+            resultDiv.innerHTML = '<div class="spinner"></div> Probando conexión...';
+            resultDiv.className = "result";
+            resultDiv.style.display = "block";
+            responseDiv.textContent = "Esperando respuesta...";
+            
+            fetch(scriptUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error HTTP: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    try {
+                        const jsonData = JSON.parse(data);
+                        resultDiv.innerHTML = "¡Conexión exitosa! El script respondió correctamente.";
+                        resultDiv.className = "result success";
+                        responseDiv.textContent = JSON.stringify(jsonData, null, 2);
+                    } catch (e) {
+                        resultDiv.innerHTML = "¡Conexión exitosa! Pero la respuesta no es un JSON válido.";
+                        resultDiv.className = "result success";
+                        responseDiv.textContent = data;
+                    }
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `Error: ${error.message}`;
+                    resultDiv.className = "result error";
+                    responseDiv.textContent = "No se pudo obtener respuesta.";
+                });
+        }
+        
+        function testDashboardData() {
+            const scriptUrl = document.getElementById('script-url').value.trim();
+            const resultDiv = document.getElementById('result');
+            const responseDiv = document.getElementById('response');
+            
+            if (!scriptUrl) {
+                resultDiv.innerHTML = "Por favor, ingresa la URL del script.";
+                resultDiv.className = "result error";
+                resultDiv.style.display = "block";
+                return;
+            }
+            
+            resultDiv.innerHTML = '<div class="spinner"></div> Solicitando datos del dashboard...';
+            resultDiv.className = "result";
+            resultDiv.style.display = "block";
+            responseDiv.textContent = "Esperando respuesta...";
+            
+            fetch(`${scriptUrl}?action=getDashboardData`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error HTTP: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    try {
+                        const jsonData = JSON.parse(data);
+                        resultDiv.innerHTML = "¡Datos del dashboard recibidos correctamente!";
+                        resultDiv.className = "result success";
+                        responseDiv.textContent = JSON.stringify(jsonData, null, 2);
+                    } catch (e) {
+                        resultDiv.innerHTML = "Se recibió respuesta, pero no es un JSON válido.";
+                        resultDiv.className = "result error";
+                        responseDiv.textContent = data;
+                    }
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `Error: ${error.message}`;
+                    resultDiv.className = "result error";
+                    responseDiv.textContent = "No se pudo obtener respuesta.";
+                });
+        }
+    </script>
+</body>
+</html> 

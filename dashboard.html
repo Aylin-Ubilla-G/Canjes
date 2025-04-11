@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Dashboard de Canjes - JetSmart</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <img src="logo.png" alt="JetSmart" class="logo">
+                <nav>
+                    <a href="index.html"><i class="fas fa-edit"></i> Formulario de Canje</a>
+                    <a href="dashboard.html" class="nav-active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard">
+        <div class="container">
+            <h1>Dashboard de Solicitudes de Canje</h1>
+            <p class="subtitle">Panel de control para monitorear las solicitudes de canje procesadas</p>
+
+            <div class="dashboard-filters">
+                <div class="filter-group">
+                    <label for="filtro-fecha-desde">Desde</label>
+                    <input type="date" id="filtro-fecha-desde">
+                </div>
+                <div class="filter-group">
+                    <label for="filtro-fecha-hasta">Hasta</label>
+                    <input type="date" id="filtro-fecha-hasta">
+                </div>
+                <div class="filter-group">
+                    <label for="filtro-estado">Estado</label>
+                    <select id="filtro-estado">
+                        <option value="">Todos</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="aprobado">Aprobado</option>
+                        <option value="rechazado">Rechazado</option>
+                        <option value="procesando">Procesando</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filtro-pais">País</label>
+                    <select id="filtro-pais">
+                        <option value="">Todos</option>
+                        <option value="Chile">Chile</option>
+                        <option value="Argentina">Argentina</option>
+                        <option value="Perú">Perú</option>
+                        <option value="Colombia">Colombia</option>
+                        <option value="Paraguay">Paraguay</option>
+                        <option value="Uruguay">Uruguay</option>
+                        <option value="Ecuador">Ecuador</option>
+                        <option value="Brasil">Brasil</option>
+                    </select>
+                </div>
+                <button id="btn-filtrar" class="btn-primary"><i class="fas fa-filter"></i> Filtrar</button>
+            </div>
+
+            <div class="last-updated">Última actualización: <span id="fecha-actualizacion">-</span></div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3>Total de Solicitudes</h3>
+                    <div class="card-content">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span class="number" id="total-solicitudes">--</span>
+                    </div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Pendientes</h3>
+                    <div class="card-content pending">
+                        <i class="fas fa-clock"></i>
+                        <span class="number" id="solicitudes-pendientes">--</span>
+                    </div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Aprobadas</h3>
+                    <div class="card-content approved">
+                        <i class="fas fa-check-circle"></i>
+                        <span class="number" id="solicitudes-aprobadas">--</span>
+                    </div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Rechazadas</h3>
+                    <div class="card-content rejected">
+                        <i class="fas fa-times-circle"></i>
+                        <span class="number" id="solicitudes-rechazadas">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-blocks">
+                <div class="summary-block">
+                    <h3>Resumen por Tipo de Solicitud</h3>
+                    <div class="summary-content" id="resumen-por-tipo">
+                        <div class="loading-content">
+                            <div class="spinner"></div>
+                            <p>Cargando datos...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="summary-block">
+                    <h3>Resumen por País</h3>
+                    <div class="summary-content" id="resumen-por-pais">
+                        <div class="loading-content">
+                            <div class="spinner"></div>
+                            <p>Cargando datos...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recent-requests">
+                <h3>Solicitudes Recientes</h3>
+                <div class="loading-content">
+                    <div class="spinner"></div>
+                    <p>Cargando solicitudes...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 JetSmart - Todos los derechos reservados</p>
+        </div>
+    </footer>
+
+    <script src="dashboard.js"></script>
+</body>
+</html> 

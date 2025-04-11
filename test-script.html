@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prueba de Conexión con Google Apps Script</title>
+</head>
+<body>
+    <h2>Prueba de Conexión</h2>
+    <button onclick="testConnection()">Probar Conexión Simple</button>
+    <button onclick="testDashboardData()">Probar Datos Dashboard</button>
+    <h3>Respuesta:</h3>
+    <pre id="response" style="background-color: #f0f0f0; padding: 10px;"></pre>
+
+    <script>
+        function testConnection() {
+            const url = 'https://script.google.com/macros/s/AKfycbwZAPR6dzK6v0-gDAnzhvf_GCGb6bt4NYNuYMQ36qO2zSK90XDqInDlnZSlo909Lug9FQ/exec?action=test';
+            
+            document.getElementById('response').textContent = 'Conectando...';
+            
+            fetch(url)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('response').textContent = data;
+                })
+                .catch(error => {
+                    document.getElementById('response').textContent = 'Error: ' + error.message;
+                });
+        }
+        
+        function testDashboardData() {
+            const url = 'https://script.google.com/macros/s/AKfycbwZAPR6dzK6v0-gDAnzhvf_GCGb6bt4NYNuYMQ36qO2zSK90XDqInDlnZSlo909Lug9FQ/exec?action=getDashboardData';
+            
+            document.getElementById('response').textContent = 'Solicitando datos...';
+            
+            fetch(url)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('response').textContent = data;
+                })
+                .catch(error => {
+                    document.getElementById('response').textContent = 'Error: ' + error.message;
+                });
+        }
+    </script>
+</body>
+</html> 

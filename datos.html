@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos Enviados - JetSmart</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .data-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .data-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .data-table tr:hover {
+            background-color: #f0f0f0;
+        }
+        .refresh-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .refresh-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="logo.png" alt="JetSmart Logo">
+        </div>
+        <nav>
+            <a href="index.html"><i class="fas fa-edit"></i> Formulario de Reserva</a>
+            <a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1>Datos Enviados Recientemente</h1>
+            <p>Esta página muestra las últimas 10 solicitudes enviadas al sistema.</p>
+            
+            <button id="refreshData" class="refresh-btn">Actualizar Datos</button>
+            
+            <div id="lastUpdated"></div>
+            
+            <div id="dataContainer">
+                <p>Cargando datos...</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            
+            document.getElementById('refreshData').addEventListener('click', loadData);
+        });
+        
+        async function loadData() {
+            try {
+                const scriptUrl = 'https://script.google.com/macros/s/AKfycbxYDRb8NdJi6nUDx8E_pn-cJ6UXPqAv_uxvtW9dwc7rCPreNpVd7b6yAVpItbdMblC2/exec';
+                
+                document.getElementById('dataContainer').innerHTML = '<p>Cargando datos...</p>';
+                
+                const response = await fetch(`${scriptUrl}?action=getDashboardData&dateRange=30`);
+                const data = await response.json();
+                
+                if (data.recentRequests && data.recentRequests.length > 0) {
+                    // Mostrar la hora de última actualización
+                    const now = new Date();
+                    document.getElementById('lastUpdated').innerHTML = `<p>Última actualización: ${now.toLocaleString()}</p>`;
+                    
+                    // Crear tabla con los datos
+                    let tableHtml = '<table class="data-table">';
+                    tableHtml += '<thead><tr>';
+                    tableHtml += '<th>Fecha</th>';
+                    tableHtml += '<th>Email</th>';
+                    tableHtml += '<th>País</th>';
+                    tableHtml += '<th>Tipo</th>';
+                    tableHtml += '<th>Partner</th>';
+                    tableHtml += '<th>Estado</th>';
+                    tableHtml += '</tr></thead>';
+                    tableHtml += '<tbody>';
+                    
+                    data.recentRequests.forEach(request => {
+                        const fecha = new Date(request.fechaSolicitud).toLocaleString();
+                        
+                        tableHtml += '<tr>';
+                        tableHtml += `<td>${fecha}</td>`;
+                        tableHtml += `<td>${request.email || ''}</td>`;
+                        tableHtml += `<td>${request.pais || ''}</td>`;
+                        tableHtml += `<td>${request.tipoSolicitud || ''}</td>`;
+                        tableHtml += `<td>${request.partner || ''}</td>`;
+                        tableHtml += `<td>${request.estado || 'Pendiente'}</td>`;
+                        tableHtml += '</tr>';
+                    });
+                    
+                    tableHtml += '</tbody></table>';
+                    document.getElementById('dataContainer').innerHTML = tableHtml;
+                } else {
+                    document.getElementById('dataContainer').innerHTML = '<p>No hay datos para mostrar. Intenta enviar algunas solicitudes primero.</p>';
+                }
+            } catch (error) {
+                console.error('Error al cargar los datos:', error);
+                document.getElementById('dataContainer').innerHTML = '<p>Error al cargar los datos. Por favor, intenta de nuevo.</p>';
+            }
+        }
+    </script>
+</body>
+</html> 
